@@ -8,6 +8,8 @@ const questionnaireSchema = new Schema({
     {
       index: Number,
       text: String,
+      denpentQuestion: String,
+      dependentAnswer: String,
       answers: [
         {
           text: String,
