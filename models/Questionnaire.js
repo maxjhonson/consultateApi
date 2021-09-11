@@ -10,6 +10,14 @@ const questionnaireSchema = new Schema({
       text: String,
       denpentQuestion: String,
       dependentAnswer: String,
+      dependentQuestions: [
+        {
+          questionId: String,
+          questionText: String,
+          answerId: String,
+          answerText: String,
+        },
+      ],
       answers: [
         {
           text: String,
