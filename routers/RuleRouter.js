@@ -29,5 +29,5 @@ router.delete("/rule/:id", async function (req, res) {
   const response = await Rule.deleteOne({ _id: id });
   return res.status(200).send(response);
 });
-
+/* */
 module.exports = router;
