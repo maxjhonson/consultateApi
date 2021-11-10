@@ -68,15 +68,20 @@ router.get(
     const { id } = req.params;
     const QuestionarieDb = mongoose.model("Questionnaire");
     const questionarie = await QuestionarieDb.findById(id);
-    console.log(questionarie.questions.dependentQuestions);
-    const dependantAnswers = new Set(
-      questionarie.questions
-        .map((x) => x.dependentQuestions)
-        .map((x) => x.answerId)
-        .concat(questionarie.questions.dependantAnswers)
-    );
-    console.log(...dependantAnswers);
-    questionarie.dependantAnswers = dependantAnswers;
+    questionarie.questions.forEach((que, i) => {
+      console.log(
+        i,
+        que.dependentQuestions.map((y) => y.answerId)
+      );
+      const dependantAnswers = new Set(
+        que.dependentQuestions
+          .map((y) => y.answerId)
+          .concat(que.dependantAnswers)
+      );
+
+      questionarie.questions[i].dependantAnswers = [...dependantAnswers];
+    });
+
     if (!questionarie) return next(new AppError("Not Found", 404));
     res.status(200).send(questionarie);
   })
