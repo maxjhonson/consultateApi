@@ -9,7 +9,8 @@ const questionnaireSchema = new Schema({
       index: Number,
       text: String,
       denpentQuestion: String,
-      dependentAnswer: String,
+      dependantAnswers: [String],
+
       dependentQuestions: [
         {
           questionId: String,
@@ -22,6 +23,10 @@ const questionnaireSchema = new Schema({
         {
           text: String,
           letter: String,
+          dependantForm: {
+            formId: String,
+            quantity: Number,
+          },
         },
       ],
     },
