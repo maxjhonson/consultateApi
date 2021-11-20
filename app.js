@@ -1,6 +1,7 @@
 require("dotenv").config();
 require("./models/Questionnaire");
 require("./models/Rule");
+require("./models/Recomendation");
 const express = require("express");
 const bodyParser = require("body-parser");
 
@@ -10,6 +11,7 @@ const app = express();
 var cors = require("cors");
 const AppError = require("./util/appError");
 const errorHandler = require("./util/errorHandler");
+const recomendationRouter = require("./routers/RecomendationRouter");
 const port = process.env.PORT || 3001;
 require("./config/db");
 app.use(cors());
@@ -24,6 +26,7 @@ process.on("uncaughtException", (err) => {
 });
 
 app.use(questionnaireRoute);
+app.use(recomendationRouter);
 app.use(ruleRouter);
 
 app.all("*", (req, res, next) => {
