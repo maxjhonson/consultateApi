@@ -36,7 +36,7 @@ router.post(
   async function (req, res, next) {
     const Questionnaire = mongoose.model("Questionnaire");
     const newQuestionnaire = JSON.parse(req.body.data);
-    newQuestionnaire.flagUrl = `http://${req.headers.host}/${req.file.filename}`;
+    //newQuestionnaire.flagUrl = `http://${req.headers.host}/${req.file?.filename}`;
     const questionnaire = new Questionnaire(newQuestionnaire);
 
     try {
