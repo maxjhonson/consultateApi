@@ -4,13 +4,25 @@ const { Schema } = mongoose;
 const questionnaireSchema = new Schema({
   formName: String,
   flagUrl: String,
+  recomendationsByCalification: [
+    {
+      startRange: Number,
+      endRange: Number,
+      recomendations: [
+        {
+          _id: String,
+          recomendation: String,
+          secondRecomendation: String,
+        },
+      ],
+    },
+  ],
   questions: [
     {
       index: Number,
       text: String,
       denpentQuestion: String,
       dependantAnswers: [String],
-
       dependentQuestions: [
         {
           questionId: String,

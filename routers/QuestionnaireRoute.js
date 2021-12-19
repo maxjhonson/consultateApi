@@ -49,12 +49,13 @@ router.post(
 );
 
 router.put("/questionnaire", async function (req, res) {
-  const questionaire = JSON.parse(req.body.data);
+  console.log("aa", req.body);
 
+  const questionaire = req.body;
   const Questionnaire = mongoose.model("Questionnaire");
   const { _id } = questionaire;
   try {
-    const response = await Questionnaire.updateOne({ _id }, questionaire);
+    await Questionnaire.updateOne({ _id }, questionaire);
     const questionaireUpdated = await Questionnaire.findById(_id);
     return res.status(201).send(questionaireUpdated);
   } catch (err) {

@@ -5,6 +5,7 @@ const ruleSchema = new Schema({
   formId: String,
   ruleName: String,
   ruleValue: Number,
+  recomendations: [String],
   questionsRule: [
     {
       text: String,

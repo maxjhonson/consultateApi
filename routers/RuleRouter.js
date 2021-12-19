@@ -16,6 +16,20 @@ router.post("/rule", async function (req, res) {
   }
 });
 
+router.put("/rule", async function (req, res) {
+  const Rule = mongoose.model("Rule");
+  //const newRule = JSON.parse(req.body);
+
+  try {
+    const response = await Rule.findByIdAndUpdate(req.body._id, req.body, {
+      useFindAndModify: false,
+    });
+    return res.status(201).send(response);
+  } catch (err) {
+    return res.status(500).send("Error");
+  }
+});
+
 router.get("/rule", async function (req, res) {
   const Rule = mongoose.model("Rule");
   const response = await Rule.find({ formId: req.query.formId });
