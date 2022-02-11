@@ -2,6 +2,7 @@ require("dotenv").config();
 require("./models/Questionnaire");
 require("./models/Rule");
 require("./models/Recomendation");
+require("./models/Configuration");
 const express = require("express");
 const bodyParser = require("body-parser");
 

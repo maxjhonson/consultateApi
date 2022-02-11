@@ -1,7 +1,10 @@
 const express = require("express");
+const { route } = require("express/lib/application");
 const mongoose = require("mongoose");
 const multer = require("multer");
 const path = require("path");
+const { updateConfiguration } = require("../controller/configurationController");
+const { getMainQuestionnaire } = require("../controller/questionnaireController");
 const AppError = require("../util/appError");
 const catchAsync = require("./catchAsync");
 
@@ -30,33 +33,32 @@ router.get(
   })
 );
 
-router.post(
-  "/questionnaire",
-  upload.single("flag"),
-  async function (req, res, next) {
-    const Questionnaire = mongoose.model("Questionnaire");
-    const newQuestionnaire = JSON.parse(req.body.data);
-    //newQuestionnaire.flagUrl = `http://${req.headers.host}/${req.file?.filename}`;
-    const questionnaire = new Questionnaire(newQuestionnaire);
-
-    try {
-      const response = await questionnaire.save();
-      return res.status(201).send(response);
-    } catch (err) {
-      return res.status(500).send("Error");
-    }
+router.post("/questionnaire", upload.single("flag"), async function (req, res, next) {
+  const Questionnaire = mongoose.model("Questionnaire");
+  const newQuestionnaire = req.body;
+  const questionnaire = new Questionnaire(newQuestionnaire);
+  const { isPrincipalForm } = newQuestionnaire;
+  try {
+    const response = await questionnaire.save();
+    if (isPrincipalForm) updateConfiguration({ principalForm: newQuestionnaire._id });
+    questionaireUpdated.isPrincipalForm = isPrincipalForm;
+    return res.status(201).send(response);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send("Error");
   }
-);
+});
 
 router.put("/questionnaire", async function (req, res) {
-  console.log("aa", req.body);
-
   const questionaire = req.body;
   const Questionnaire = mongoose.model("Questionnaire");
   const { _id } = questionaire;
+  const { isPrincipalForm } = questionaire;
   try {
     await Questionnaire.updateOne({ _id }, questionaire);
     const questionaireUpdated = await Questionnaire.findById(_id);
+    if (isPrincipalForm) updateConfiguration({ principalForm: questionaire._id });
+    questionaireUpdated.isPrincipalForm = isPrincipalForm;
     return res.status(201).send(questionaireUpdated);
   } catch (err) {
     return res.status(500).send("Error");
@@ -75,9 +77,7 @@ router.get(
         que.dependentQuestions.map((y) => y.answerId)
       );
       const dependantAnswers = new Set(
-        que.dependentQuestions
-          .map((y) => y.answerId)
-          .concat(que.dependantAnswers)
+        que.dependentQuestions.map((y) => y.answerId).concat(que.dependantAnswers)
       );
 
       questionarie.questions[i].dependantAnswers = [...dependantAnswers];
@@ -87,5 +87,7 @@ router.get(
     res.status(200).send(questionarie);
   })
 );
+
+router.get("/mainQuestionnaire", getMainQuestionnaire);
 
 module.exports = router;
