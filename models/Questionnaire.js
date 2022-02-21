@@ -3,6 +3,7 @@ const { Schema } = mongoose;
 
 const questionnaireSchema = new Schema({
   formName: String,
+  formType: String,
   flagUrl: String,
   recomendationsByCalification: [
     {

@@ -27,7 +27,7 @@ router.get(
     const Form = mongoose.model("Questionnaire");
     const results = await Form.find();
     const allForms = results.map((form) => {
-      return { _id: form._id, formName: form.formName };
+      return { _id: form._id, formName: form.formName, formType: form.formType };
     });
     res.send(allForms);
   })
