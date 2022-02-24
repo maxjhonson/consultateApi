@@ -8,6 +8,10 @@ const recomendationSchema = new Schema({
   secondRecomendation: {
     type: String,
   },
+  magnitude: {
+    type: Number,
+  },
+  asociatedRecomendations: [],
 });
 
 module.exports = mongoose.model("Recomendation", recomendationSchema);
