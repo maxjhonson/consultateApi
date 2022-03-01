@@ -5,19 +5,6 @@ const questionnaireSchema = new Schema({
   formName: String,
   formType: String,
   flagUrl: String,
-  recomendationsByCalification: [
-    {
-      startRange: Number,
-      endRange: Number,
-      recomendations: [
-        {
-          _id: String,
-          recomendation: String,
-          secondRecomendation: String,
-        },
-      ],
-    },
-  ],
   questions: [
     {
       index: Number,
