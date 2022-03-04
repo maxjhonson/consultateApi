@@ -41,7 +41,7 @@ router.post("/questionnaire", upload.single("flag"), async function (req, res, n
   try {
     const response = await questionnaire.save();
     if (isPrincipalForm) updateConfiguration({ principalForm: newQuestionnaire._id });
-    questionaireUpdated.isPrincipalForm = isPrincipalForm;
+    //questionaireUpdated.isPrincipalForm = isPrincipalForm;
     return res.status(201).send(response);
   } catch (err) {
     console.log(err);
@@ -82,6 +82,33 @@ router.get(
 
       questionarie.questions[i].dependantAnswers = [...dependantAnswers];
     });
+
+    if (!questionarie) return next(new AppError("Not Found", 404));
+    res.status(200).send(questionarie);
+  })
+);
+
+router.get(
+  "/questionnaireRoot",
+  catchAsync(async (req, res, next) => {
+    const QuestionarieDb = mongoose.model("Questionnaire");
+    const questionarie = await QuestionarieDb.findOne({ formType: "root" }).select(
+      "_id questions formType"
+    );
+
+    if (!questionarie) return next(new AppError("Not Found", 404));
+    res.status(200).send(questionarie);
+  })
+);
+
+router.get(
+  "/questionnaireDependent/:id",
+  catchAsync(async (req, res, next) => {
+    const { id } = req.params;
+    const QuestionarieDb = mongoose.model("Questionnaire");
+    const questionarie = await QuestionarieDb.findById(id).select(
+      "_id questions formType"
+    );
 
     if (!questionarie) return next(new AppError("Not Found", 404));
     res.status(200).send(questionarie);
