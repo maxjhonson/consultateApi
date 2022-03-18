@@ -37,11 +37,27 @@ router.post("/questionnaire", upload.single("flag"), async function (req, res, n
   const Questionnaire = mongoose.model("Questionnaire");
   const newQuestionnaire = req.body;
   const questionnaire = new Questionnaire(newQuestionnaire);
-  const { isPrincipalForm } = newQuestionnaire;
+
   try {
+    if (req.body.formType === "root") {
+      const previousRoot = await Questionnaire.findOne({
+        formType: "root",
+      });
+      if (previousRoot) {
+        return res
+          .status(400)
+          .send(new AppError("Ya existe un formulario declarado como Raiz", 400));
+      }
+      if (newQuestionnaire.questions.length > 1) {
+        return res
+          .status(400)
+          .send(
+            new AppError("El formulario Raiz solo debe tener una sola pregunta", 400)
+          );
+      }
+    }
     const response = await questionnaire.save();
-    if (isPrincipalForm) updateConfiguration({ principalForm: newQuestionnaire._id });
-    //questionaireUpdated.isPrincipalForm = isPrincipalForm;
+
     return res.status(201).send(response);
   } catch (err) {
     console.log(err);
@@ -52,14 +68,29 @@ router.post("/questionnaire", upload.single("flag"), async function (req, res, n
 router.put("/questionnaire", async function (req, res) {
   const questionaire = req.body;
   const Questionnaire = mongoose.model("Questionnaire");
-  const { _id } = questionaire;
-  const { isPrincipalForm } = questionaire;
+  const { _id, formType } = questionaire;
+
   try {
+    if (formType === "root") {
+      const previousRoot = await Questionnaire.findOne({
+        formType: "root",
+        _id: { $ne: _id },
+      });
+      if (previousRoot) {
+        return res
+          .status(400)
+          .send(new AppError("Ya existe un formulario declarado como Raiz", 400));
+      }
+      if (questionaire.questions.length > 1) {
+        return res
+          .status(400)
+          .send(
+            new AppError("El formulario Raiz solo debe tener una sola pregunta", 400)
+          );
+      }
+    }
     await Questionnaire.updateOne({ _id }, questionaire);
-    const questionaireUpdated = await Questionnaire.findById(_id);
-    if (isPrincipalForm) updateConfiguration({ principalForm: questionaire._id });
-    questionaireUpdated.isPrincipalForm = isPrincipalForm;
-    return res.status(201).send(questionaireUpdated);
+    return res.status(201).send(questionaire);
   } catch (err) {
     return res.status(500).send("Error");
   }

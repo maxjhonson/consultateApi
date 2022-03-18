@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 const questionnaireSchema = new Schema({
   formName: String,
-  formType: String,
+  formType: String, //root | principal | nested
   flagUrl: String,
   questions: [
     {
